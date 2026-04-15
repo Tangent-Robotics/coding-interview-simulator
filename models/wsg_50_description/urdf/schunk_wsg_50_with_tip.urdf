@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<robot name="Schunk_Gripper">
+
+  <link name="body">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.98888200000000004"/>
+      <inertia ixx="0.162992" ixy="0" ixz="0" iyy="0.162992" iyz="0" izz="0.16481399999999999"/>
+    </inertial>
+    <visual name="visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://drake_models/wsg_50_description/meshes/wsg_body.gltf" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.14599999999999999 0.072499999999999995 0.050000000000000003"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="left_finger">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.050000000000000003"/>
+      <inertia ixx="0.16" ixy="0" ixz="0" iyy="0.16" iyz="0" izz="0.16"/>
+    </inertial>
+    <visual name="visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://drake_models/wsg_50_description/meshes/finger_with_tip.gltf" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision name="left_top">
+      <origin xyz="-0.0080000000000000002 0.021000000000000001 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="left_bottom">
+      <origin xyz="-0.0080000000000000002 0.041000000000000002 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="left_left">
+      <origin xyz="-0.0080000000000000002 0.031 -0.01" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="left_right">
+      <origin xyz="-0.0080000000000000002 0.031 0.01" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.012 0.082000000000000003 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="right_finger">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.050000000000000003"/>
+      <inertia ixx="0.16" ixy="0" ixz="0" iyy="0.16" iyz="0" izz="0.16"/>
+    </inertial>
+    <visual name="visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://drake_models/wsg_50_description/meshes/finger_with_tip.gltf" scale="1 1 1"/>
+      </geometry>
+    </visual>
+    <collision name="right_top">
+      <origin xyz="-0.0080000000000000002 0.021000000000000001 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="right_bottom">
+      <origin xyz="-0.0080000000000000002 0.041000000000000002 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="right_left">
+      <origin xyz="-0.0080000000000000002 0.031 -0.01" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="right_right">
+      <origin xyz="-0.0080000000000000002 0.031 0.01" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.012 0.082000000000000003 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Joint origins are relative to body link frame.
+       Body SDF pose: (0, -0.049133, 0). Finger SDF poses are absolute in model frame,
+       so relative positions are: finger_pos - body_pos. -->
+  <joint name="left_finger_sliding_joint" type="prismatic">
+    <origin xyz="-0.0115 0.077133 0" rpy="3.1415926535897931 6.5358979307628824e-07 3.1415926535897931"/>
+    <parent link="body"/>
+    <child link="left_finger"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="-0.055" upper="0" effort="80" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+  <joint name="right_finger_sliding_joint" type="prismatic">
+    <origin xyz="0.0115 0.077133 0" rpy="0 0 0"/>
+    <parent link="body"/>
+    <child link="right_finger"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0" upper="0.055" effort="80" velocity="100"/>
+    <dynamics damping="0" friction="0"/>
+  </joint>
+
+
+  <transmission name="left_finger_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="left_finger_sliding_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="left_finger_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="right_finger_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="right_finger_sliding_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="right_finger_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>
