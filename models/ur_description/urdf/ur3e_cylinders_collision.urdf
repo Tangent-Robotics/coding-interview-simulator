@@ -298,22 +298,4 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <!-- ROS base_link to UR 'Base' Coordinates transform -->
-  <link name="ur_base"/>
-  <joint name="ur_base_link-base_fixed_joint" type="fixed">
-    <!-- NOTE: this rotation is only needed as long as base_link itself is
-                 not corrected wrt the real robot (ie: rotated over 180
-                 degrees)
-      -->
-    <origin rpy="0 0 -3.141592653589793" xyz="0 0 0"/>
-    <parent link="ur_base_link"/>
-    <child link="ur_base"/>
-  </joint>
-  <!-- Frame coincident with all-zeros TCP on UR controller -->
-  <link name="ur_tool0"/>
-  <joint name="ur_wrist_3_link-tool0_fixed_joint" type="fixed">
-    <origin rpy="-1.5707963267948966 0 0" xyz="0 0.092 0"/>
-    <parent link="ur_wrist_3_link"/>
-    <child link="ur_tool0"/>
-  </joint>
 </robot>
