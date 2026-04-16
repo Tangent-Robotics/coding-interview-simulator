@@ -419,6 +419,12 @@ def _query_block_poses_in_camera_frame(plant, plant_context, block_models):
 def _run_simulation(cmd_queue, result_queue, visualizer_port):
     """Target function for the simulation child process."""
     import queue as _queue_mod
+    import signal
+
+    # Ignore SIGINT so that stopping a Colab/Jupyter cell (which sends SIGINT
+    # to the whole process group) does not kill the simulation backend.
+    # The process is still daemon=True, so it will die when the kernel exits.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
 
     try:
         meshcat = Meshcat(visualizer_port)
