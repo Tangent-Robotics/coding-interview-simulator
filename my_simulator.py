@@ -739,3 +739,9 @@ class MySimulator:
             "position": [0.145, 0.0, 0.0],
             "quaternion": [0.0, 0.7071, 0.0, 0.7071],  # Ry(+90°) in [x,y,z,w]
         }
+
+    def get_block_size(self):
+        """Get the block dimensions as a constant 3D vector [x, y, z] in metres.
+        All blocks are uniform cubes, so all three components are equal.
+        Returns list of 3 floats."""
+        return [BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE]
