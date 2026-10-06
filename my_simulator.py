@@ -45,7 +45,7 @@ TABLE_HEIGHT = 1.0
 
 ROBOT_BASE_POSITION = np.array([0.0, 0.0, TABLE_HEIGHT])
 
-BLOCK_SIZE = 0.06
+BLOCK_SIZE = 0.05
 BLOCK_MASS = 0.1
 
 BLOCK_COLORS = {
@@ -54,8 +54,8 @@ BLOCK_COLORS = {
 }
 
 BLOCK_NOMINAL_POSITIONS = [
-    [0.4, -0.10],
-    [0.4,  0.10],
+    [0.3, -0.10],
+    [0.3,  0.10],
 ]
 BLOCK_XY_NOISE = 0.02
 BLOCK_DROP_HEIGHT = 0.002  # small gap to avoid initial table penetration
