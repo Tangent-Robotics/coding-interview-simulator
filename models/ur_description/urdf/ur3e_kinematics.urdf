@@ -1,0 +1,148 @@
+<?xml version="1.0" ?>
+<!-- UR3e kinematics + collision geometry, for ikpy: Chain.from_urdf_file(path).
+     Derived from ur3e_cylinders_collision.urdf; root renamed ur_base_link -> base_link
+     (ikpy default); visuals, inertials, transmissions removed. -->
+<robot name="ur3e">
+  <link name="base_link">
+    <!-- Base joint -->
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.012"/>
+      <geometry>
+        <sphere radius="0.07"/>
+      </geometry>
+    </collision>
+    <!-- Cable connector -->
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 -0.08 0.02"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="ur_shoulder_pan_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="ur_shoulder_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.152"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="330.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="3.14"/>
+  </joint>
+  <link name="ur_shoulder_link">
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0.0 -0.02"/>
+      <geometry>
+        <cylinder length="0.16" radius="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="ur_shoulder_lift_joint" type="revolute">
+    <parent link="ur_shoulder_link"/>
+    <child link="ur_upper_arm_link"/>
+    <origin rpy="0.0 1.5707963267948966 0.0" xyz="0.0 0.12 0.0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="330.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="3.14"/>
+  </joint>
+  <link name="ur_upper_arm_link">
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0.0 -0.02 0.0"/>
+      <geometry>
+        <cylinder length="0.16" radius="0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.045"/>
+      <geometry>
+        <cylinder length="0.051" radius="0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.127"/>
+      <geometry>
+        <cylinder length="0.21" radius="0.04"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0.0 0.005 0.243"/>
+      <geometry>
+        <cylinder length="0.11" radius="0.041"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="ur_elbow_joint" type="revolute">
+    <parent link="ur_upper_arm_link"/>
+    <child link="ur_forearm_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 -0.093 0.244"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="150.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="3.14"/>
+  </joint>
+  <link name="ur_forearm_link">
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0.0 0.02 0.005"/>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0.0 0.1115"/>
+      <geometry>
+        <cylinder length="0.185" radius="0.034"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0.0 0.022 0.213"/>
+      <geometry>
+        <cylinder length="0.14" radius="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="ur_wrist_1_joint" type="revolute">
+    <parent link="ur_forearm_link"/>
+    <child link="ur_wrist_1_link"/>
+    <origin rpy="0.0 1.5707963267948966 0.0" xyz="0.0 0.0 0.213"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="54.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="6.28"/>
+  </joint>
+  <link name="ur_wrist_1_link">
+    <collision>
+      <origin rpy="0 0 0" xyz="0.0 0.105 0.012"/>
+      <geometry>
+        <cylinder length="0.12" radius="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="ur_wrist_2_joint" type="revolute">
+    <parent link="ur_wrist_1_link"/>
+    <child link="ur_wrist_2_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.104 0.0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="54.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="6.28"/>
+  </joint>
+  <link name="ur_wrist_2_link">
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0.0 -0.001 0.086"/>
+      <geometry>
+        <cylinder length="0.092" radius="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="ur_wrist_3_joint" type="revolute">
+    <parent link="ur_wrist_2_link"/>
+    <child link="ur_wrist_3_link"/>
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.085"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="54.0" lower="-3.141592653589793" upper="3.141592653589793" velocity="6.28"/>
+  </joint>
+  <link name="ur_wrist_3_link">
+    <collision>
+      <origin rpy="1.5707963267948966 0 0" xyz="0.0 0.07 0.0"/>
+      <geometry>
+        <cylinder length="0.05" radius="0.034"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="ur_ee_fixed_joint" type="fixed">
+    <parent link="ur_wrist_3_link"/>
+    <child link="ur_ee_link"/>
+    <origin rpy="0.0 0.0 1.5707963267948966" xyz="0.0 0.092 0.0"/>
+  </joint>
+  <link name="ur_ee_link"/>
+</robot>
