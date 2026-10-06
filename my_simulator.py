@@ -60,8 +60,9 @@ BLOCK_NOMINAL_POSITIONS = [
 BLOCK_XY_NOISE = 0.02
 BLOCK_DROP_HEIGHT = 0.05
 
-CAMERA_POSITION = np.array([0.5, 0.0, 1.2])
-CAMERA_QUATERNION_XYZW = np.array([-0.3420, 0.0, 0.0, 0.9397])
+# Looks at the world origin; +z optical axis, +x right, +y down.
+CAMERA_POSITION = np.array([1.0, 0.0, 2.0])
+CAMERA_QUATERNION_XYZW = np.array([0.6882, 0.6882, -0.1625, -0.1625])
 
 ARM_KP, ARM_KD = 10000.0, 500.0
 GRIPPER_KP, GRIPPER_KD = 500.0, 100.0
@@ -88,6 +89,23 @@ SETTLING_TIMEOUT = 2.0
 # ---------------------------------------------------------------------------
 # Scene builder
 # ---------------------------------------------------------------------------
+
+def _add_camera_marker(meshcat, size=0.08):
+    """Draw a small pyramid at the camera pose: apex at the camera origin, base toward +z (optical axis)."""
+    h, w = size, size / 2
+    vertices = np.array([
+        [0, 0, 0],
+        [-w, -w, h], [w, -w, h], [w, w, h], [-w, w, h],
+    ], dtype=float).T
+    faces = np.array([
+        [0, 1, 2], [0, 2, 3], [0, 3, 4], [0, 4, 1],  # sides
+        [1, 3, 2], [1, 4, 3],                        # base
+    ], dtype=np.uint32).T
+    meshcat.SetTriangleMesh("/camera_marker", vertices, faces, Rgba(1.0, 0.8, 0.0, 1.0))
+    xyzw = CAMERA_QUATERNION_XYZW / np.linalg.norm(CAMERA_QUATERNION_XYZW)
+    q = Quaternion(w=float(xyzw[3]), x=float(xyzw[0]), y=float(xyzw[1]), z=float(xyzw[2]))
+    meshcat.SetTransform("/camera_marker", RigidTransform(RotationMatrix(q), CAMERA_POSITION))
+
 
 def _build_scene(meshcat):
     """Build the Drake scene with UR3e, WSG-50, table, and colored blocks.
@@ -286,6 +304,7 @@ def _build_scene(meshcat):
     meshcat.SetProperty("/Background", "bottom_color", [0.25, 0.25, 0.3])
     meshcat.SetProperty("/Grid", "visible", False)
     meshcat.SetProperty("/Axes", "visible", False)
+    _add_camera_marker(meshcat)
 
     # ------------------------------------------------------------------
     # Desired-state input sources (ConstantVectorSource as placeholders)
