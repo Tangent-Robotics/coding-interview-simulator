@@ -58,7 +58,7 @@ BLOCK_NOMINAL_POSITIONS = [
     [0.4,  0.10],
 ]
 BLOCK_XY_NOISE = 0.02
-BLOCK_DROP_HEIGHT = 0.05
+BLOCK_DROP_HEIGHT = 0.002  # small gap to avoid initial table penetration
 
 # Looks at the world origin; +z optical axis, +x right, +y down.
 CAMERA_POSITION = np.array([1.0, 0.0, 2.0])
@@ -248,17 +248,14 @@ def _build_scene(meshcat):
             block_contact,
         )
 
-        # Randomized initial pose: jittered XY, dropped from above, random orientation
+        # Randomized initial pose: jittered XY, dropped from above, z up with random yaw
         rng = np.random.default_rng()
         nominal = BLOCK_NOMINAL_POSITIONS[i]
         x = nominal[0] + rng.uniform(-BLOCK_XY_NOISE, BLOCK_XY_NOISE)
         y = nominal[1] + rng.uniform(-BLOCK_XY_NOISE, BLOCK_XY_NOISE)
         z = TABLE_HEIGHT + BLOCK_SIZE / 2 + BLOCK_DROP_HEIGHT
-        random_quat = rng.standard_normal(4)
-        random_quat /= np.linalg.norm(random_quat)
-        q = Quaternion(w=random_quat[3], x=random_quat[0], y=random_quat[1], z=random_quat[2])
         plant.SetDefaultFloatingBaseBodyPose(
-            body, RigidTransform(RotationMatrix(q), [x, y, z])
+            body, RigidTransform(RotationMatrix.MakeZRotation(rng.uniform(-np.pi, np.pi)), [x, y, z])
         )
 
         block_models.append((model_instance, body, color_name))
@@ -540,12 +537,9 @@ def _run_simulation(cmd_queue, result_queue, visualizer_port):
                         bx = nominal[0] + rng.uniform(-BLOCK_XY_NOISE, BLOCK_XY_NOISE)
                         by = nominal[1] + rng.uniform(-BLOCK_XY_NOISE, BLOCK_XY_NOISE)
                         bz = TABLE_HEIGHT + BLOCK_SIZE / 2 + BLOCK_DROP_HEIGHT
-                        rq = rng.standard_normal(4)
-                        rq /= np.linalg.norm(rq)
-                        bq = Quaternion(w=float(rq[3]), x=float(rq[0]), y=float(rq[1]), z=float(rq[2]))
                         plant.SetFreeBodyPose(
                             plant_context, blk_body,
-                            RigidTransform(RotationMatrix(bq), [bx, by, bz]),
+                            RigidTransform(RotationMatrix.MakeZRotation(rng.uniform(-np.pi, np.pi)), [bx, by, bz]),
                         )
                         plant.SetVelocities(plant_context, blk_model,
                                             np.zeros(plant.num_velocities(blk_model)))
